@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Personas - Con Fotos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .input-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .photo-field {
+            flex: 0 0 100%;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #4CAF50;
+        }
+        
+        .photo-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .photo-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            object-fit: cover;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .primary-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .secondary-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #0b7dda;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .danger-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .danger-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .warning-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .warning-btn:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .table-container {
+            margin-top: 20px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            max-height: 0;
+            opacity: 0;
+        }
+        
+        .table-container.show {
+            max-height: 1000px;
+            opacity: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #f2f8ff;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #888;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        .editable {
+            background-color: #fffde7;
+            border: 1px dashed #ffc107;
+            padding: 8px 10px;
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        .photo-cell {
+            text-align: center;
+        }
+        
+        .photo-cell img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .photo-cell input[type="file"] {
+            width: 100%;
+            font-size: 12px;
+            padding: 5px;
+        }
+        
+        .mensaje {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .mensaje.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .mensaje.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+            
+            .input-field {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .photo-cell img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Personas</h1>
+        <p class="subtitle">Gestiona nombres, apellidos y fotos de personas</p>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <div class="input-field">
+                    <label for="nombreInput">Nombre</label>
+                    <input type="text" id="nombreInput" placeholder="Ingresa el nombre">
+                </div>
+                <div class="input-field">
+                    <label for="apellido1Input">Primer Apellido</label>
+                    <input type="text" id="apellido1Input" placeholder="Ingresa el primer apellido">
+                </div>
+                <div class="input-field">
+                    <label for="apellido2Input">Segundo Apellido</label>
+                    <input type="text" id="apellido2Input" placeholder="Ingresa el segundo apellido">
+                </div>
+                <div class="photo-field">
+                    <label for="fotoInput">Foto de la Persona</label>
+                    <input type="file" id="fotoInput" accept="image/*">
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="guardarBtn" class="primary-btn">Guardar Persona</button>
+                <button id="mostrarTablaBtn" class="secondary-btn">Mostrar Tabla</button>
+                <button id="limpiarBtn" class="warning-btn">Limpiar Campos</button>
+            </div>
+            
+            <div id="mensaje" class="mensaje"></div>
+        </div>
+        
+        <div class="table-container" id="tableContainer">
+            <table id="tablaPersonas">
+                <thead>
+                    <tr>
+                        <th width="8%">#</th>
+                        <th width="10%">Foto</th>
+                        <th width="20%">Nombre</th>
+                        <th width="20%">Primer Apellido</th>
+                        <th width="20%">Segundo Apellido</th>
+                        <th width="22%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBody">
+                    <!-- Los registros se agregarán aquí -->
+                </tbody>
+            </table>
+            
+            <div class="stats">
+                <div>Total de registros: <span id="totalRegistros">0</span></div>
+                <div>Modo edición: <span id="modoEdicion">No</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nombreInput = document.getElementById('nombreInput');
+            const apellido1Input = document.getElementById('apellido1Input');
+            const apellido2Input = document.getElementById('apellido2Input');
+            const fotoInput = document.getElementById('fotoInput');
+            const guardarBtn = document.getElementById('guardarBtn');
+            const mostrarTablaBtn = document.getElementById('mostrarTablaBtn');
+            const limpiarBtn = document.getElementById('limpiarBtn');
+            const tablaBody = document.getElementById('tablaBody');
+            const mensaje = document.getElementById('mensaje');
+            const totalRegistros = document.getElementById('totalRegistros');
+            const modoEdicion = document.getElementById('modoEdicion');
+            const tableContainer = document.getElementById('tableContainer');
+            const photoPreview = document.getElementById('photoPreview');
+            
+            // Cargar personas guardadas desde localStorage
+            let personas = JSON.parse(localStorage.getItem('personas')) || [];
+            let editandoIndex = -1;
+            let tablaVisible = false;
+            let fotoActual = null;
+            
+            // Función para mostrar mensajes
+            function mostrarMensaje(texto, tipo) {
+                mensaje.textContent = texto;
+                mensaje.className = 'mensaje ' + tipo;
+                setTimeout(() => {
+                    mensaje.textContent = '';
+                    mensaje.className = 'mensaje';
+                }, 4000);
+            }
+            
+            // Función para limpiar campos
+            function limpiarCampos() {
+                nombreInput.value = '';
+                apellido1Input.value = '';
+                apellido2Input.value = '';
+                fotoInput.value = '';
+                photoPreview.innerHTML = '';
+                fotoActual = null;
+                nombreInput.focus();
+            }
+            
+            // Función para previsualizar foto
+            fotoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        photoPreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
+                        fotoActual = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Función para alternar visibilidad de la tabla
+            function toggleTabla() {
+                tablaVisible = !tablaVisible;
+                if (tablaVisible) {
+                    tableContainer.classList.add('show');
+                    mostrarTablaBtn.textContent = 'Ocultar Tabla';
+                    actualizarTabla();
+                } else {
+                    tableContainer.classList.remove('show');
+                    mostrarTablaBtn.textContent = 'Mostrar Tabla';
+                }
+            }
+            
+            // Función para actualizar la tabla
+            function actualizarTabla() {
+                tablaBody.innerHTML = '';
+                totalRegistros.textContent = personas.length;
+                
+                if (personas.length === 0) {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `<td colspan="6" class="empty-message">No hay personas registradas. Agrega la primera usando el formulario superior.</td>`;
+                    tablaBody.appendChild(fila);
+                    return;
+                }
+                
+                personas.forEach((persona, index) => {
+                    const fila = document.createElement('tr');
+                    
+                    const celdaNumero = document.createElement('td');
+                    celdaNumero.textContent = index + 1;
+                    
+                    const celdaFoto = document.createElement('td');
+                    celdaFoto.className = 'photo-cell';
+                    
+                    const celdaNombre = document.createElement('td');
+                    const celdaApellido1 = document.createElement('td');
+                    const celdaApellido2 = document.createElement('td');
+                    
+                    if (editandoIndex === index) {
+                        // Modo edición
+                        const inputFoto = document.createElement('input');
+                        inputFoto.type = 'file';
+                        inputFoto.accept = 'image/*';
+                        inputFoto.id = 'editFoto';
+                        
+                        // Mostrar imagen actual si existe
+                        if (persona.foto) {
+                            const imgActual = document.createElement('img');
+                            imgActual.src = persona.foto;
+                            imgActual.alt = 'Foto actual';
+                            celdaFoto.appendChild(imgActual);
+                        }
+                        
+                        celdaFoto.appendChild(inputFoto);
+                        
+                        const inputNombre = document.createElement('input');
+                        inputNombre.type = 'text';
+                        inputNombre.value = persona.nombre;
+                        inputNombre.className = 'editable';
+                        inputNombre.id = 'editNombre';
+                        
+                        const inputApellido1 = document.createElement('input');
+                        inputApellido1.type = 'text';
+                        inputApellido1.value = persona.apellido1;
+                        inputApellido1.className = 'editable';
+                        inputApellido1.id = 'editApellido1';
+                        
+                        const inputApellido2 = document.createElement('input');
+                        inputApellido2.type = 'text';
+                        inputApellido2.value = persona.apellido2;
+                        inputApellido2.className = 'editable';
+                        inputApellido2.id = 'editApellido2';
+                        
+                        celdaNombre.appendChild(inputNombre);
+                        celdaApellido1.appendChild(inputApellido1);
+                        celdaApellido2.appendChild(inputApellido2);
+                    } else {
+                        // Modo visualización
+                        if (persona.foto) {
+                            const img = document.createElement('img');
+                            img.src = persona.foto;
+                            img.alt = `Foto de ${persona.nombre}`;
+                            celdaFoto.appendChild(img);
+                        } else {
+                            celdaFoto.innerHTML = '<div style="color:#999; font-size:12px;">Sin foto</div>';
+                        }
+                        
+                        celdaNombre.textContent = persona.nombre;
+                        celdaApellido1.textContent = persona.apellido1;
+                        celdaApellido2.textContent = persona.apellido2;
+                    }
+                    
+                    const celdaAcciones = document.createElement('td');
+                    const divAcciones = document.createElement('div');
+                    divAcciones.className = 'action-buttons';
+                    
+                    if (editandoIndex === index) {
+                        // Botones durante edición
+                        const botonGuardar = document.createElement('button');
+                        botonGuardar.textContent = 'Guardar';
+                        botonGuardar.classList.add('primary-btn', 'action-btn');
+                        botonGuardar.addEventListener('click', function() {
+                            guardarEdicion(index);
+                        });
+                        
+                        const botonCancelar = document.createElement('button');
+                        botonCancelar.textContent = 'Cancelar';
+                        botonCancelar.classList.add('danger-btn', 'action-btn');
+                        botonCancelar.addEventListener('click', function() {
+                            cancelarEdicion();
+                        });
+                        
+                        divAcciones.appendChild(botonGuardar);
+                        divAcciones.appendChild(botonCancelar);
+                    } else {
+                        // Botones normales
+                        const botonModificar = document.createElement('button');
+                        botonModificar.textContent = 'Modificar';
+                        botonModificar.classList.add('secondary-btn', 'action-btn');
+                        botonModificar.addEventListener('click', function() {
+                            iniciarEdicion(index);
+                        });
+                        
+                        const botonEliminar = document.createElement('button');
+                        botonEliminar.textContent = 'Eliminar';
+                        botonEliminar.classList.add('danger-btn', 'action-btn');
+                        botonEliminar.addEventListener('click', function() {
+                            eliminarPersona(index);
+                        });
+                        
+                        divAcciones.appendChild(botonModificar);
+                        divAcciones.appendChild(botonEliminar);
+                    }
+                    
+                    celdaAcciones.appendChild(divAcciones);
+                    
+                    fila.appendChild(celdaNumero);
+                    fila.appendChild(celdaFoto);
+                    fila.appendChild(celdaNombre);
+                    fila.appendChild(celdaApellido1);
+                    fila.appendChild(celdaApellido2);
+                    fila.appendChild(celdaAcciones);
+                    
+                    tablaBody.appendChild(fila);
+                });
+                
+                // Actualizar estado de edición
+                modoEdicion.textContent = editandoIndex !== -1 ? 'Sí' : 'No';
+            }
+            
+            // Función para iniciar la edición de una persona
+            function iniciarEdicion(index) {
+                editandoIndex = index;
+                actualizarTabla();
+                
+                // Enfocar el primer campo de edición
+                const editNombre = document.getElementById('editNombre');
+                if (editNombre) {
+                    editNombre.focus();
+                    
+                    // Permitir guardar con Enter en cualquier campo
+                    const inputs = [editNombre, document.getElementById('editApellido1'), document.getElementById('editApellido2')];
+                    inputs.forEach(input => {
+                        if (input) {
+                            input.addEventListener('keypress', function(e) {
+                                if (e.key === 'Enter') {
+                                    guardarEdicion(index);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // Función para guardar la edición de una persona
+            function guardarEdicion(index) {
+                const editNombre = document.getElementById('editNombre');
+                const editApellido1 = document.getElementById('editApellido1');
+                const editApellido2 = document.getElementById('editApellido2');
+                const editFoto = document.getElementById('editFoto');
+                
+                const nuevoNombre = editNombre.value.trim();
+                const nuevoApellido1 = editApellido1.value.trim();
+                const nuevoApellido2 = editApellido2.value.trim();
+                
+                if (nuevoNombre === '' || nuevoApellido1 === '') {
+                    mostrarMensaje('El nombre y primer apellido son obligatorios', 'error');
+                    return;
+                }
+                
+                // Si hay una nueva foto, procesarla
+                if (editFoto && editFoto.files.length > 0) {
+                    const file = editFoto.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        personas[index] = {
+                            nombre: nuevoNombre,
+                            apellido1: nuevoApellido1,
+                            apellido2: nuevoApellido2,
+                            foto: e.target.result
+                        };
+                        
+                        localStorage.setItem('personas', JSON.stringify(personas));
+                        editandoIndex = -1;
+                        actualizarTabla();
+                        mostrarMensaje('Persona modificada correctamente', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // Mantener la foto existente
+                    personas[index] = {
+                        nombre: nuevoNombre,
+                        apellido1: nuevoApellido1,
+                        apellido2: nuevoApellido2,
+                        foto: personas[index].foto
+                    };
+                    
+                    localStorage.setItem('personas', JSON.stringify(personas));
+                    editandoIndex = -1;
+                    actualizarTabla();
+                    mostrarMensaje('Persona modificada correctamente', 'success');
+                }
+            }
+            
+            // Función para cancelar la edición
+            function cancelarEdicion() {
+                editandoIndex = -1;
+                actualizarTabla();
+                mostrarMensaje('Edición cancelada', 'error');
+            }
+            
+            // Función para guardar una nueva persona
+            function guardarPersona() {
+                const nombre = nombreInput.value.trim();
+                const apellido1 = apellido1Input.value.trim();
+                const apellido2 = apellido2Input.value.trim();
+                
+                if (nombre === '' || apellido1 === '') {
+                    mostrarMensaje('El nombre y primer apellido son obligatorios.', 'error');
+                    return;
+                }
+                
+                const nuevaPersona = {
+                    nombre: nombre,
+                    apellido1: apellido1,
+                    apellido2: apellido2,
+                    foto: fotoActual
+                };
+                
+                personas.push(nuevaPersona);
+                localStorage.setItem('personas', JSON.stringify(personas));
+                limpiarCampos();
+                actualizarTabla();
+                mostrarMensaje('Persona guardada correctamente', 'success');
+            }
+            
+            // Función para eliminar una persona
+            function eliminarPersona(index) {
+                if (confirm('¿Estás seguro de que quieres eliminar esta persona?')) {
+                    personas.splice(index, 1);
+                    localStorage.setItem('personas', JSON.stringify(personas));
+                    actualizarTabla();
+                    mostrarMensaje('Persona eliminada correctamente', 'success');
+                }
+            }
+            
+            // Eventos para los botones
+            guardarBtn.addEventListener('click', guardarPersona);
+            mostrarTablaBtn.addEventListener('click', toggleTabla);
+            limpiarBtn.addEventListener('click', limpiarCampos);
+            
+            // Evento para presionar Enter en cualquier campo de texto
+            [nombreInput, apellido1Input, apellido2Input].forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        guardarPersona();
+                    }
+                });
+            });
+            
+            // Inicializar la aplicación
+            actualizarTabla();
+        });
+    </script>
+</body>
+</html>
