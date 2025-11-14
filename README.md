@@ -1,0 +1,2 @@
+# mi-tabla
+FUNCION DE CAPTURA
